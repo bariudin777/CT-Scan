@@ -128,7 +128,7 @@ class CT_MODEL():
 
         # Creating model and compiling
         model = Model(inputs=inputs, outputs=output)
-        model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+        model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['binary_accuracy'])
 
         # Callbacks
         checkpoint = ModelCheckpoint(filepath='best_weights.hdf5', save_best_only=True, save_weights_only=True)
@@ -141,21 +141,12 @@ class CT_MODEL():
             validation_steps=test_gen.samples // batch_size, callbacks=[checkpoint, lr_reduce])
         return hist
 
-    def plotLoss(self, ax):
-        for i, met in enumerate(['acc', 'loss']):
-            ax[i].plot(hist.history[met])
-            ax[i].plot(hist.history['val_' + met])
-            ax[i].set_title('Model {}'.format(met))
-            ax[i].set_xlabel('epochs')
-            ax[i].set_ylabel(met)
-            ax[i].legend(['train', 'val'])
-
 
 if __name__ == "__main__":
     input_path = '/home/bariudin77/PycharmProjects/CT-Scan/chest-xray-pneumonia/chest_xray/'
     ######################################
     img_dims = 150
-    epochs = 10
+    epochs = 1
     batch_size = 32
     data = DataProcess()
     data.process_data(img_dims, batch_size, input_path)
@@ -168,4 +159,3 @@ if __name__ == "__main__":
     ######################################
     fig, ax = plt.subplots(1, 2, figsize=(10, 3))
     ax = ax.ravel()
-    m.plotLoss(ax)
